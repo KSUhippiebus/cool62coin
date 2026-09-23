@@ -10,6 +10,7 @@ else:
 PEERS_FILE = BASE_DIR / "peers.txt"
 GENESIS_FILE = BASE_DIR / "genesis.json"
 DATA_DIR = BASE_DIR / "data"
+ADDRESSES_FILE = BASE_DIR / "addresses.txt"
 
 INTERNAL_PORT = 8090
 SOCKS_PORT = 9050

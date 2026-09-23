@@ -4,11 +4,36 @@ import time
 
 import requests
 
+import config
 from core import load_key_address, load_private_key, sign_transaction
 
 DEFAULT_NODE = "http://127.0.0.1:8090"
 DEFAULT_KEY = "private_key.pem"
 
+addresses = {}
+
+def load_addresses():
+    global addresses
+    with open(config.ADDRESSES_FILE, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            key, value = line.split("=", 1)
+            addresses[key.strip()] = value.strip()
+
+load_addresses()
+
+def parseAdress(string):
+    if string.startswith("__ADDRESS__"):
+        return string[len("__ADDRESS__"):]
+    else:
+        return addresses.get(string[0],addresses["me"])
+
+print(addresses)
+print(parseAdress("me"))
 
 def _node(base, path, method="GET", body=None):
     try:
@@ -100,18 +125,18 @@ def interactive(args):
                 break
             elif cmd in ("help", "h"):
                 print(HELP_TEXT)
-            elif cmd == "address":
+            elif cmd == "address" or cmd == "a":
                 cmd_address(args)
             elif cmd == "status":
                 cmd_status(args)
-            elif cmd == "balance":
+            elif cmd == "balance" or cmd == "b":
                 args.address = parts[0] if parts else None
                 cmd_balance(args)
-            elif cmd == "send":
+            elif cmd == "send" or cmd == "s":
                 if len(parts) < 2:
                     print("usage: send <receiver> <amount>")
                     continue
-                args.receiver = parts[0]
+                args.receiver = parseAdress(parts[0])
                 args.amount = parts[1]
                 args.key = DEFAULT_KEY
                 cmd_send(args)
