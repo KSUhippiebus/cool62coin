@@ -26,14 +26,14 @@ def load_addresses():
 
 load_addresses()
 
-def parseAdress(string):
+def parseAddress(string):
     if string.startswith("__ADDRESS__"):
         return string[len("__ADDRESS__"):]
     else:
         return addresses.get(string[0],addresses["me"])
 
 print(addresses)
-print(parseAdress("me"))
+print(parseAddress("me"))
 
 def _node(base, path, method="GET", body=None):
     try:
@@ -136,7 +136,8 @@ def interactive(args):
                 if len(parts) < 2:
                     print("usage: send <receiver> <amount>")
                     continue
-                args.receiver = parseAdress(parts[0])
+                args.receiver = parseAddress(parts[0])
+                print(f"sending to {args.receiver}")
                 args.amount = parts[1]
                 args.key = DEFAULT_KEY
                 cmd_send(args)
